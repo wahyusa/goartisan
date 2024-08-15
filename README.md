@@ -34,3 +34,7 @@ goartisan make:model Book
 ## Default Configuration
 
 WIP
+
+## Is this works ?
+
+As for now it's still in development so you can't use it yet.

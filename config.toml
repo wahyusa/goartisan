@@ -1,0 +1,8 @@
+[app]
+folder = "app"
+
+[database]
+default = "mysql"
+
+[templates]
+path = "internal/templates"

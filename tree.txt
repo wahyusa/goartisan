@@ -1,0 +1,33 @@
+goartisan/
+├── cmd/
+│   ├── root.go/base.go
+│   ├── init.go
+│   ├── make.go
+│   ├── add.go
+│   └── migrate.go
+├── internal/
+│   ├── config/
+│   │   └── config.go
+│   ├── generator/
+│   │   ├── model.go
+│   │   ├── repository.go
+│   │   ├── service.go
+│   │   ├── handler.go
+│   │   └── middleware.go
+│   ├── templates/
+│   │   ├── model.go.tmpl
+│   │   ├── repository.go.tmpl
+│   │   ├── service.go.tmpl
+│   │   ├── handler.go.tmpl
+│   │   └── middleware.go.tmpl
+│   ├── utils/
+│   │   ├── file.go
+│   │   └── string.go
+│   └── migration/
+│       └── migration.go
+├── tests/
+│   └── goartisan_test.go
+├── go.mod
+├── go.sum
+├── main.go
+└── config.toml
