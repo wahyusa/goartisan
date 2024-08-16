@@ -1,0 +1,23 @@
+run:
+  skip-dirs: []
+
+linters:
+  disable-all: true
+  enable:
+    -	errcheck
+    - asciicheck
+    -	gosimple
+    -	govet
+    -	ineffassign
+    -	staticcheck
+    -	typecheck
+    -	unused
+
+linters-settings:
+  unused:
+    check-exported: false
+
+issues:
+  exclude-rules:
+    - linters:
+        - unused
