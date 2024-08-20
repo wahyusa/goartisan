@@ -49,8 +49,23 @@ var makeServiceCmd = &cobra.Command{
 	},
 }
 
+var makeHandlerCmd = &cobra.Command{
+	Use:   "make:handler [name]",
+	Short: "Generate a new handler",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		handlerName := args[0]
+		if err := generator.GenerateHandler(handlerName); err != nil {
+			fmt.Println("Error generating handler:", err)
+		} else {
+			fmt.Println("Handler generated successfully:", handlerName)
+		}
+	},
+}
+
 func init() {
 	baseCmd.AddCommand(makeModelCmd)
 	baseCmd.AddCommand(makeRepoCmd)
 	baseCmd.AddCommand(makeServiceCmd)
+	baseCmd.AddCommand(makeHandlerCmd)
 }
