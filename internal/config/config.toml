@@ -1,0 +1,28 @@
+[app]
+folder = "app"
+
+[database]
+default = "mysql"
+
+[templates]
+path = "internal/templates"
+
+[structure]
+dirs = [
+    "app/model",
+    "app/service",
+    "app/repository",
+    "app/handler",
+    "app/middleware",
+    "app/config",
+    "app/database",
+]
+
+files = [
+    "app/config/config.go",
+    "app/database/mysql.go",
+    ".env",
+    ".gitignore",
+    # "go.mod",
+    "main.go",
+]

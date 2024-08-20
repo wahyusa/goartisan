@@ -1,0 +1,10 @@
+package model
+
+type {{.ModelName}} struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+}
+
+func ({{.ModelName}}) TableName() string {
+	return "{{.ModelName | toLowerCase}}s"
+}
