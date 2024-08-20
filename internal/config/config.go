@@ -11,6 +11,9 @@ import (
 var defaultConfig []byte
 
 type Config struct {
+	Module struct {
+		Name string
+	}
 	App struct {
 		Folder string
 	}

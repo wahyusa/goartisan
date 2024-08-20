@@ -1,1 +1,55 @@
-package templates
+package repository
+
+import (
+	"{{.ProjectName}}/model"
+	"gorm.io/gorm"
+)
+
+type {{.ModelName}}Repository interface {
+	Create({{.ModelName | toLowerCase}} *model.{{.ModelName}}) error
+	FindByID(id uint) (*model.{{.ModelName}}, error)
+	Update({{.ModelName | toLowerCase}} *model.{{.ModelName}}) error
+	Delete(id uint) error
+	List(page, pageSize int) ([]model.{{.ModelName}}, int64, error)
+}
+
+type {{.ModelName | toLowerCase}}Repository struct {
+	db *gorm.DB
+}
+
+func New{{.ModelName}}Repository(db *gorm.DB) {{.ModelName}}Repository {
+	return &{{.ModelName | toLowerCase}}Repository{db: db}
+}
+
+func (r *{{.ModelName | toLowerCase}}Repository) Create({{.ModelName | toLowerCase}} *model.{{.ModelName}}) error {
+	return r.db.Create({{.ModelName | toLowerCase}}).Error
+}
+
+func (r *{{.ModelName | toLowerCase}}Repository) FindByID(id uint) (*model.{{.ModelName}}, error) {
+	var {{.ModelName | toLowerCase}} model.{{.ModelName}}
+	err := r.db.First(&{{.ModelName | toLowerCase}}, id).Error
+	return &{{.ModelName | toLowerCase}}, err
+}
+
+func (r *{{.ModelName | toLowerCase}}Repository) Update({{.ModelName | toLowerCase}} *model.{{.ModelName}}) error {
+	return r.db.Save({{.ModelName | toLowerCase}}).Error
+}
+
+func (r *{{.ModelName | toLowerCase}}Repository) Delete(id uint) error {
+	return r.db.Delete(&model.{{.ModelName}}{}, id).Error
+}
+
+func (r *{{.ModelName | toLowerCase}}Repository) List(page, pageSize int) ([]model.{{.ModelName}}, int64, error) {
+	var {{.ModelName | toLowerCase}}s []model.{{.ModelName}}
+	var total int64
+
+	offset := (page - 1) * pageSize
+
+	err := r.db.Model(&model.{{.ModelName}}{}).Count(&total).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	err = r.db.Offset(offset).Limit(pageSize).Find(&{{.ModelName | toLowerCase}}s).Error
+	return {{.ModelName | toLowerCase}}s, total, err
+}

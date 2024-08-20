@@ -1,1 +1,42 @@
-package templates
+package service
+
+import (
+	"{{.ProjectName}}/model"
+	"{{.ProjectName}}/repository"
+)
+
+type {{.ModelName}}Service interface {
+	Create{{.ModelName}}({{.ModelName | toLowerCase}} *model.{{.ModelName}}) error
+	Get{{.ModelName}}ByID(id uint) (*model.{{.ModelName}}, error)
+	Update{{.ModelName}}({{.ModelName | toLowerCase}} *model.{{.ModelName}}) error
+	Delete{{.ModelName}}(id uint) error
+	List{{.ModelName}}s(page, pageSize int) ([]model.{{.ModelName}}, int64, error)
+}
+
+type {{.ModelName | toLowerCase}}Service struct {
+	repo repository.{{.ModelName}}Repository
+}
+
+func New{{.ModelName}}Service(repo repository.{{.ModelName}}Repository) {{.ModelName}}Service {
+	return &{{.ModelName | toLowerCase}}Service{repo: repo}
+}
+
+func (s *{{.ModelName | toLowerCase}}Service) Create{{.ModelName}}({{.ModelName | toLowerCase}} *model.{{.ModelName}}) error {
+	return s.repo.Create({{.ModelName | toLowerCase}})
+}
+
+func (s *{{.ModelName | toLowerCase}}Service) Get{{.ModelName}}ByID(id uint) (*model.{{.ModelName}}, error) {
+	return s.repo.FindByID(id)
+}
+
+func (s *{{.ModelName | toLowerCase}}Service) Update{{.ModelName}}({{.ModelName | toLowerCase}} *model.{{.ModelName}}) error {
+	return s.repo.Update({{.ModelName | toLowerCase}})
+}
+
+func (s *{{.ModelName | toLowerCase}}Service) Delete{{.ModelName}}(id uint) error {
+	return s.repo.Delete(id)
+}
+
+func (s *{{.ModelName | toLowerCase}}Service) List{{.ModelName}}s(page, pageSize int) ([]model.{{.ModelName}}, int64, error) {
+	return s.repo.List(page, pageSize)
+}

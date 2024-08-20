@@ -21,6 +21,36 @@ var makeModelCmd = &cobra.Command{
 	},
 }
 
+var makeRepoCmd = &cobra.Command{
+	Use:   "make:repo [name]",
+	Short: "Generate a new repository",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		repoName := args[0]
+		if err := generator.GenerateRepository(repoName); err != nil {
+			fmt.Println("Error generating repository:", err)
+		} else {
+			fmt.Println("Repository generated successfully:", repoName)
+		}
+	},
+}
+
+var makeServiceCmd = &cobra.Command{
+	Use:   "make:service [name]",
+	Short: "Generate a new service",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		serviceName := args[0]
+		if err := generator.GenerateService(serviceName); err != nil {
+			fmt.Println("Error generating service:", err)
+		} else {
+			fmt.Println("Service generated successfully:", serviceName)
+		}
+	},
+}
+
 func init() {
 	baseCmd.AddCommand(makeModelCmd)
+	baseCmd.AddCommand(makeRepoCmd)
+	baseCmd.AddCommand(makeServiceCmd)
 }
