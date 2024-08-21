@@ -11,6 +11,7 @@ import (
 	"text/template"
 
 	"github.com/fatih/color"
+	"github.com/spf13/viper"
 	"github.com/wahyusa/goartisan/internal/config"
 )
 
@@ -31,6 +32,9 @@ var envTemplate []byte
 //go:embed templates/gitignore.go.tmpl
 var gitignoreTemplate []byte
 
+//go:embed templates/config.toml.tmpl
+var defaultConfig []byte
+
 func GenerateProjectFiles(projectName, projectPath string, gitFlag bool) error {
 	// Convert projectPath to an absolute path
 	absProjectPath, err := filepath.Abs(projectPath)
@@ -38,7 +42,35 @@ func GenerateProjectFiles(projectName, projectPath string, gitFlag bool) error {
 		return fmt.Errorf("failed to get absolute path: %v", err)
 	}
 
-	// Load configuration
+	// Ensure the config directory exists
+	configDir := filepath.Join(os.Getenv("HOME"), ".goartisan")
+	if err := os.MkdirAll(configDir, fs.ModePerm); err != nil {
+		return fmt.Errorf("failed to create config directory: %v", err)
+	}
+
+	// Check if ~/.goartisan/config.toml exists, if not, create it from the embedded default config
+	configFilePath := filepath.Join(configDir, "config.toml")
+	if _, err := os.Stat(configFilePath); os.IsNotExist(err) {
+		if err := os.WriteFile(configFilePath, defaultConfig, 0644); err != nil {
+			return fmt.Errorf("failed to write default config file: %v", err)
+		}
+	}
+
+	// Load configuration using Viper
+	viper.SetConfigFile(configFilePath)
+	if err := viper.ReadInConfig(); err != nil {
+		return fmt.Errorf("failed to read config file: %v", err)
+	}
+
+	// Update the module name in the configuration
+	viper.Set("module.name", projectName)
+
+	// Save the updated configuration back to config.toml
+	if err := viper.WriteConfig(); err != nil {
+		return fmt.Errorf("failed to write config file: %v", err)
+	}
+
+	// Load the updated configuration
 	cfg, err := config.Load()
 	if err != nil {
 		return err
@@ -74,8 +106,8 @@ func GenerateProjectFiles(projectName, projectPath string, gitFlag bool) error {
 
 	data := map[string]string{
 		"ProjectName": projectName,
-		"DBDriver":    "mysql", // You can adjust this based on your configuration
-		"Port":        "8080",
+		"DBDriver":    cfg.Database.Default,
+		"Port":        cfg.Server.Port,
 	}
 
 	for filePath, tmplContent := range templates {

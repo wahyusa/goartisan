@@ -1,0 +1,33 @@
+# Default config embedded in the binary, different from the one in the template
+[module]
+name = "go-api"
+
+[app]
+folder = "app"
+
+[database]
+default = "mysql"
+
+[templates]
+path = "internal/templates"
+
+[structure]
+dirs = [
+    "app/model",
+    "app/service",
+    "app/repository",
+    "app/handler",
+    "app/middleware",
+    "app/config",
+    "app/database",
+    "app/routes",
+]
+
+files = [
+    "app/config/config.go",
+    "app/database/database.go",
+    ".env",
+    ".gitignore",
+    "main.go",
+    "app/routes/routes.go",
+]

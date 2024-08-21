@@ -20,6 +20,9 @@ type Config struct {
 	Database struct {
 		Default string
 	}
+	Server struct {
+		Port string
+	}
 	Templates struct {
 		Path string
 	}

@@ -1,33 +1,44 @@
-goartisan/
-├── cmd/
-│   ├── root.go/base.go
-│   ├── init.go
-│   ├── make.go
-│   ├── add.go
-│   └── migrate.go
-├── internal/
-│   ├── config/
-│   │   └── config.go
-│   ├── generator/
-│   │   ├── model.go
-│   │   ├── repository.go
-│   │   ├── service.go
-│   │   ├── handler.go
-│   │   └── middleware.go
-│   ├── templates/
-│   │   ├── model.go.tmpl
-│   │   ├── repository.go.tmpl
-│   │   ├── service.go.tmpl
-│   │   ├── handler.go.tmpl
-│   │   └── middleware.go.tmpl
-│   ├── utils/
-│   │   ├── file.go
-│   │   └── string.go
-│   └── migration/
-│       └── migration.go
-├── tests/
-│   └── goartisan_test.go
+.
+├── cmd
+│  ├── add.go
+│  ├── base.go
+│  ├── init.go
+│  ├── make.go
+│  └── migrate.go
 ├── go.mod
 ├── go.sum
+├── goartisan.exe
+├── golangci.yml
+├── internal
+│  ├── config
+│  │  ├── config.go
+│  │  └── config.toml
+│  ├── generator
+│  │  ├── handler.go
+│  │  ├── init_generator.go
+│  │  ├── middleware.go
+│  │  ├── model.go
+│  │  ├── repository.go
+│  │  ├── service.go
+│  │  └── templates
+│  │     ├── config.toml.tmpl
+│  │     ├── database.go.tmpl
+│  │     ├── env.go.tmpl
+│  │     ├── gitignore.go.tmpl
+│  │     ├── handler.go.tmpl
+│  │     ├── main.go.tmpl
+│  │     ├── middleware.go.tmpl
+│  │     ├── model.go.tmpl
+│  │     ├── repository.go.tmpl
+│  │     ├── routes.go.tmpl
+│  │     └── service.go.tmpl
+│  ├── migration
+│  │  └── migration.go
+│  └── utils
+│     ├── file.go
+│     └── string.go
 ├── main.go
-└── config.toml
+├── README.md
+├── tests
+│  └── goartisan_test.go
+└── tree.txt
