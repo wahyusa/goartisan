@@ -1,0 +1,16 @@
+package model
+
+import (
+	"gorm.io/gorm"
+)
+
+type {{.ModelName}} struct {
+	gorm.Model
+	Name        string `json:"name" gorm:"size:255;not null"`
+	Description string `json:"description" gorm:"type:text"`
+	// Add more fields as needed
+}
+
+func ({{.ModelName}}) TableName() string {
+	return "{{.ModelName | toLowerCase}}s"
+}

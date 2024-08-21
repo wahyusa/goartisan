@@ -1,0 +1,119 @@
+// templates/make/handler.go.tmpl
+
+package handler
+
+import (
+	"net/http"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"github.com/yourusername/{{.ProjectName}}/model"
+	"github.com/yourusername/{{.ProjectName}}/service"
+)
+
+type {{.ModelName}}Handler struct {
+	service service.{{.ModelName}}Service
+}
+
+func New{{.ModelName}}Handler(service service.{{.ModelName}}Service) *{{.ModelName}}Handler {
+	return &{{.ModelName}}Handler{service: service}
+}
+
+func (h *{{.ModelName}}Handler) Create{{.ModelName}}(c *gin.Context) {
+	var {{.ModelName | toLowerCase}} model.{{.ModelName}}
+	if err := c.ShouldBindJSON(&{{.ModelName | toLowerCase}}); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := h.service.Create{{.ModelName}}(&{{.ModelName | toLowerCase}}); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create {{.ModelName | toLowerCase}}"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, {{.ModelName | toLowerCase}})
+}
+
+func (h *{{.ModelName}}Handler) Get{{.ModelName}}(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+
+	{{.ModelName | toLowerCase}}, err := h.service.Get{{.ModelName}}ByID(uint(id))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "{{.ModelName}} not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, {{.ModelName | toLowerCase}})
+}
+
+func (h *{{.ModelName}}Handler) Update{{.ModelName}}(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+
+	var {{.ModelName | toLowerCase}} model.{{.ModelName}}
+	if err := c.ShouldBindJSON(&{{.ModelName | toLowerCase}}); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	{{.ModelName | toLowerCase}}.ID = uint(id)
+
+	if err := h.service.Update{{.ModelName}}(&{{.ModelName | toLowerCase}}); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update {{.ModelName | toLowerCase}}"})
+		return
+	}
+
+	c.JSON(http.StatusOK, {{.ModelName | toLowerCase}})
+}
+
+func (h *{{.ModelName}}Handler) Delete{{.ModelName}}(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+
+	if err := h.service.Delete{{.ModelName}}(uint(id)); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete {{.ModelName | toLowerCase}}"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "{{.ModelName}} deleted successfully"})
+}
+
+func (h *{{.ModelName}}Handler) List{{.ModelName}}s(c *gin.Context) {
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+
+	{{.ModelName | toLowerCase}}s, total, err := h.service.List{{.ModelName}}s(page, pageSize)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to list {{.ModelName | toLowerCase}}s"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data":  {{.ModelName | toLowerCase}}s,
+		"total": total,
+		"page":  page,
+		"size":  pageSize,
+	})
+}
+
+// you can move this to routes.go for better routes management but it's up to you
+func Register{{.ModelName}}Routes(router *gin.RouterGroup, handler *{{.ModelName}}Handler) {
+	{{.ModelName | toLowerCase}}s := router.Group("/{{.ModelName | toLowerCase}}s")
+	{
+		{{.ModelName | toLowerCase}}s.POST("/", handler.Create{{.ModelName}})
+		{{.ModelName | toLowerCase}}s.GET("/:id", handler.Get{{.ModelName}})
+		{{.ModelName | toLowerCase}}s.PUT("/:id", handler.Update{{.ModelName}})
+		{{.ModelName | toLowerCase}}s.DELETE("/:id", handler.Delete{{.ModelName}})
+		{{.ModelName | toLowerCase}}s.GET("/", handler.List{{.ModelName}}s)
+	}
+}

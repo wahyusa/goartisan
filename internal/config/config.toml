@@ -1,3 +1,6 @@
+[module]
+name = "go-api"
+
 [app]
 folder = "app"
 
@@ -16,13 +19,14 @@ dirs = [
     "app/middleware",
     "app/config",
     "app/database",
+    "app/routes",
 ]
 
 files = [
     "app/config/config.go",
-    "app/database/mysql.go",
+    "app/database/database.go",
     ".env",
     ".gitignore",
-    # "go.mod",
     "main.go",
+    "app/routes/routes.go",
 ]

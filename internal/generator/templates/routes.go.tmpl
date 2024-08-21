@@ -1,0 +1,29 @@
+package routes
+
+import (
+    "github.com/gin-gonic/gin"
+    // "{{.ProjectName}}/app/handler"
+    // "{{.ProjectName}}/app/service"
+    // "{{.ProjectName}}/app/repository"
+    // "{{.ProjectName}}/app/database"
+)
+
+func RegisterRoutes(router *gin.Engine) {
+    // Example of registering routes from each resource to the router
+
+    // Initialize services and handlers
+    // bookRepository := repository.NewBookRepository(database.DB)
+    // bookService := service.NewBookService(bookRepository)
+    // bookHandler := handler.NewBookHandler(bookService)
+
+    // Register book routes
+    // api := router.Group("/api")
+    // handler.RegisterBookRoutes(api, bookHandler)
+
+    // Simple ping-pong route on path "/"
+    router.GET("/", func(c *gin.Context) {
+        c.JSON(200, gin.H{
+            "message": "pong",
+        })
+    })
+}
