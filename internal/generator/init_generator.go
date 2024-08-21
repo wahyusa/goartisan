@@ -32,7 +32,7 @@ var envTemplate []byte
 //go:embed templates/gitignore.go.tmpl
 var gitignoreTemplate []byte
 
-//go:embed templates/config.toml.tmpl
+//go:embed templates/default_config.toml.tmpl
 var defaultConfig []byte
 
 func GenerateProjectFiles(projectName, projectPath string, gitFlag bool) error {
