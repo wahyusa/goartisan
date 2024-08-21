@@ -1,0 +1,33 @@
+package main
+
+import (
+    "log"
+    "github.com/gin-contrib/cors"
+    "github.com/gin-gonic/gin"
+    "github.com/joho/godotenv"
+    "{{.ProjectName}}/app/database"
+    "{{.ProjectName}}/app/routes"
+)
+
+func main() {
+    // Load environment variables from .env file
+    err := godotenv.Load()
+    if err != nil {
+        log.Fatalf("Error loading .env file")
+    }
+
+    // Initialize the database
+    database.Init()
+
+    // Create a new Gin router
+    router := gin.Default()
+
+    // Setup CORS middleware
+    router.Use(cors.Default())
+
+    // Register routes
+    routes.RegisterRoutes(router)
+
+    // Start the server
+    router.Run(":{{.Port}}")
+}

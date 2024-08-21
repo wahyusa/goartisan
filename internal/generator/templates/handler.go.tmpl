@@ -106,6 +106,7 @@ func (h *{{.ModelName}}Handler) List{{.ModelName}}s(c *gin.Context) {
 	})
 }
 
+// you can move this to routes.go for better routes management but it's up to you
 func Register{{.ModelName}}Routes(router *gin.RouterGroup, handler *{{.ModelName}}Handler) {
 	{{.ModelName | toLowerCase}}s := router.Group("/{{.ModelName | toLowerCase}}s")
 	{

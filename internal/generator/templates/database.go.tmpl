@@ -1,0 +1,27 @@
+package database
+
+import (
+    "fmt"
+    "log"
+    "os"
+
+    "gorm.io/driver/{{.DBDriver}}"
+    "gorm.io/gorm"
+)
+
+var DB *gorm.DB
+
+func Init() {
+    dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+        os.Getenv("DB_USERNAME"),
+        os.Getenv("DB_PASSWORD"),
+        os.Getenv("DB_HOST"),
+        os.Getenv("DB_PORT"),
+        os.Getenv("DB_DATABASE"),
+    )
+    var err error
+    DB, err = gorm.Open({{.DBDriver}}.Open(dsn), &gorm.Config{})
+    if err != nil {
+        log.Fatalf("Could not connect to the database: %v", err)
+    }
+}
