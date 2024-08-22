@@ -2,6 +2,8 @@
 
 # Go Artisan
 
+[Roadmap to v1.0.0](https://github.com/users/wahyusa/projects/12/views/1)
+
 Go Artisan is a CLI tool designed to simplify and accelerate the development of RESTful APIs in Go with artisan like command.
 
 Built with [Cobra](https://github.com/spf13/cobra) and [Viper](https://github.com/spf13/viper)
