@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-//go:embed config.toml
+//go:embed default_config.toml
 var defaultConfig []byte
 
 type Config struct {
@@ -19,6 +19,9 @@ type Config struct {
 	}
 	Database struct {
 		Default string
+	}
+	Server struct {
+		Port string
 	}
 	Templates struct {
 		Path string
