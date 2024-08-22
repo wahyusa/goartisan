@@ -48,3 +48,21 @@ Default configuration will automatically generated in your `~/` or `$HOME` direc
 You can adjust and modify it as you want but some directories are usually required and needed by `make:` command.
 
 Of course because `goartisan` are built for repository pattern RESTful API if you want to replace many things or maybe using MVC pattern or you think my structures are not your best fit it is recommended to just build your own generator based on `goartisan` source code by creating your own fork version.
+
+Consider other alternative if you want too,
+
+[Go Blueprint](https://github.com/Melkeydev/go-blueprint)
+
+[Go Scaffold](https://github.com/go-scaffold/go-scaffold)
+
+## Credits
+
+[Cobra](https://github.com/spf13/cobra)
+
+[Viper](https://github.com/spf13/viper)
+
+[Gin](https://github.com/gin-gonic/gin)
+
+[GORM](https://github.com/go-gorm/gorm)
+
+[godotenv](https://github.com/joho/godotenv)
