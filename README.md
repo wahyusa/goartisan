@@ -14,7 +14,7 @@ The code generated will using Gin, GORM, MySQL and godotenv with repository patt
 
 #### Why using goartisan if I can just scaffold any initial project with `git clone` ?
 
-Well, you will have `config.toml` that you can customize and replace `templates` to fit your own need and initialize new RESTful API project faster by using that templates.
+Well, by using go artisan you will have `config.toml` that you can customize and replace `templates` to fit your own need and initialize new RESTful API project faster by using that templates.
 
 This is also a good fit for terminal enjoyers who love to do many things directly in terminal instead of creating each file manually one by one and `alt` + `tab`.
 
@@ -29,8 +29,9 @@ It is different with all rounder framework like [Goravel](https://goravel.dev) w
 This will add `goartisan` to your `~/go/bin` folder and should be ready to use anywhere.
 
 ```bash
-go install github.com/wahyusa/goartisan
+go install github.com/wahyusa/goartisan@latest
 ```
+
 ### Install from executable file
 
 You can download the latest executable file like `goartisan.exe` on releases page in this repository.
@@ -49,12 +50,6 @@ goartisan init my-api-project
 
 ```bash
 goartisan init my-api-project --git
-```
-
-#### Shorthand
-
-```bash
-goartisan init my-api-project -g
 ```
 
 ### Generate a GORM Model / entity
