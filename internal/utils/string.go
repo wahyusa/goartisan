@@ -3,6 +3,9 @@ package utils
 import (
 	"strings"
 	"unicode"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 func ToCamelCase(s string) string {
@@ -10,8 +13,9 @@ func ToCamelCase(s string) string {
 	words := strings.FieldsFunc(s, func(r rune) bool {
 		return r == '_' || r == '-'
 	})
+	caser := cases.Title(language.Und)
 	for i := range words {
-		words[i] = strings.Title(words[i])
+		words[i] = caser.String(words[i])
 	}
 	return strings.Join(words, "")
 }
