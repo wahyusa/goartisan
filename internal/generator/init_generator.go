@@ -36,56 +36,83 @@ var gitignoreTemplate []byte
 var defaultConfig []byte
 
 func GenerateProjectFiles(projectName, projectPath string, gitFlag bool) error {
-	// Convert projectPath to an absolute path
 	absProjectPath, err := filepath.Abs(projectPath)
 	if err != nil {
 		return fmt.Errorf("failed to get absolute path: %v", err)
 	}
 
-	// Ensure the config directory exists
+	if err := ensureConfigDirectory(); err != nil {
+		return err
+	}
+
+	if err := loadAndSaveConfig(projectName); err != nil {
+		return err
+	}
+
+	cfg, err := config.Load()
+	if err != nil {
+		return err
+	}
+
+	if err := createProjectStructure(absProjectPath, cfg); err != nil {
+		return err
+	}
+
+	if err := renderTemplates(absProjectPath, projectName, cfg); err != nil {
+		return err
+	}
+
+	if err := initializeGoModules(absProjectPath, projectName); err != nil {
+		return err
+	}
+
+	if gitFlag {
+		if err := initializeGitRepository(absProjectPath); err != nil {
+			return err
+		}
+	}
+
+	color.Green("Project initialized successfully.")
+	return nil
+}
+
+func ensureConfigDirectory() error {
 	configDir := filepath.Join(os.Getenv("HOME"), ".goartisan")
 	if err := os.MkdirAll(configDir, fs.ModePerm); err != nil {
 		return fmt.Errorf("failed to create config directory: %v", err)
 	}
 
-	// Check if ~/.goartisan/config.toml exists, if not, create it from the embedded default config
 	configFilePath := filepath.Join(configDir, "config.toml")
 	if _, err := os.Stat(configFilePath); os.IsNotExist(err) {
 		if err := os.WriteFile(configFilePath, defaultConfig, 0644); err != nil {
 			return fmt.Errorf("failed to write default config file: %v", err)
 		}
 	}
+	return nil
+}
 
-	// Load configuration using Viper
+func loadAndSaveConfig(projectName string) error {
+	configFilePath := filepath.Join(os.Getenv("HOME"), ".goartisan", "config.toml")
 	viper.SetConfigFile(configFilePath)
 	if err := viper.ReadInConfig(); err != nil {
 		return fmt.Errorf("failed to read config file: %v", err)
 	}
 
-	// Update the module name in the configuration
 	viper.Set("module.name", projectName)
-
-	// Save the updated configuration back to config.toml
 	if err := viper.WriteConfig(); err != nil {
 		return fmt.Errorf("failed to write config file: %v", err)
 	}
+	return nil
+}
 
-	// Load the updated configuration
-	cfg, err := config.Load()
-	if err != nil {
-		return err
-	}
-
-	// Create directories
+func createProjectStructure(absProjectPath string, cfg *config.Config) error {
 	for _, dir := range cfg.Structure.Dirs {
 		dirPath := filepath.Join(absProjectPath, dir)
-		err := os.MkdirAll(dirPath, fs.ModeDir)
-		if err != nil {
+		if err := os.MkdirAll(dirPath, fs.ModeDir); err != nil {
 			return err
 		}
 	}
 
-	// Create files
 	for _, filePath := range cfg.Structure.Files {
 		fullPath := filepath.Join(absProjectPath, filePath)
 		file, err := os.Create(fullPath)
@@ -94,8 +121,10 @@ func GenerateProjectFiles(projectName, projectPath string, gitFlag bool) error {
 		}
 		file.Close()
 	}
+	return nil
+}
 
-	// Render and write templates
+func renderTemplates(absProjectPath, projectName string, cfg *config.Config) error {
 	templates := map[string][]byte{
 		"main.go":                  mainTemplate,
 		"app/database/database.go": databaseTemplate,
@@ -126,13 +155,10 @@ func GenerateProjectFiles(projectName, projectPath string, gitFlag bool) error {
 			return err
 		}
 	}
+	return nil
+}
 
-	// Change directory to the project path
-	if err := os.Chdir(absProjectPath); err != nil {
-		return err
-	}
-
-	// Create or open the log file
+func initializeGoModules(absProjectPath, projectName string) error {
 	logFile := filepath.Join(absProjectPath, "goartisan.log")
 	log, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
@@ -140,51 +166,36 @@ func GenerateProjectFiles(projectName, projectPath string, gitFlag bool) error {
 	}
 	defer log.Close()
 
-	// Auto run 'go mod init' command
-	color.Yellow("Running 'go mod init' command...")
-	modCmd := exec.Command("go", "mod", "init", projectName)
-	modCmd.Stdout = log
-	modCmd.Stderr = log
-	if err := modCmd.Run(); err != nil {
+	if err := runCommand("go mod init", absProjectPath, log, "go", "mod", "init", projectName); err != nil {
 		return err
 	}
 
-	// Auto run 'go mod tidy' command
-	color.Yellow("Running 'go mod tidy' command...")
-	tidyCmd := exec.Command("go", "mod", "tidy")
-	tidyCmd.Dir = absProjectPath
-	tidyOutput, err := tidyCmd.CombinedOutput()
+	if err := runCommand("go mod tidy", absProjectPath, log, "go", "mod", "tidy"); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func initializeGitRepository(absProjectPath string) error {
+	logFile := filepath.Join(absProjectPath, "goartisan.log")
+	log, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to open log file: %v", err)
 	}
+	defer log.Close()
 
-	// Log the output to the log file
-	if _, err := log.Write(tidyOutput); err != nil {
-		color.Red("Failed to write go mod tidy log: %v", err)
-	}
+	return runCommand("git init", absProjectPath, log, "git", "init")
+}
 
-	// Initialize git repository
-	if gitFlag {
-		color.Yellow("Initializing git repository...")
-		gitCmd := exec.Command("git", "init")
-		gitCmd.Dir = absProjectPath
-		gitCmd.Stdout = log
-		gitCmd.Stderr = log
-		if err := gitCmd.Run(); err != nil {
-			return err
-		}
+func runCommand(description, dir string, log *os.File, name string, args ...string) error {
+	color.Yellow("Running '%s' command...", description)
+	cmd := exec.Command(name, args...)
+	cmd.Dir = dir
+	cmd.Stdout = log
+	cmd.Stderr = log
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to run %s: %v", description, err)
 	}
-
-	// Log project structure
-	log.WriteString("Project structure:\n")
-	log.WriteString(projectName + "\n")
-	for _, dir := range cfg.Structure.Dirs {
-		log.WriteString("├── " + dir + "\n")
-	}
-	for _, file := range cfg.Structure.Files {
-		log.WriteString("├── " + file + "\n")
-	}
-
-	color.Green("Project initialized successfully.")
 	return nil
 }
