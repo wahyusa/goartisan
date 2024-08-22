@@ -27,7 +27,9 @@ func init() {
 
 func runInit(cmd *cobra.Command, args []string) {
 	if len(args) < 1 {
-		cmd.Help()
+		if err := cmd.Help(); err != nil {
+			color.Red("Error displaying help: %v", err)
+		}
 		return
 	}
 
