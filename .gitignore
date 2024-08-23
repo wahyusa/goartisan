@@ -28,3 +28,4 @@ go.work
 
 .log
 /tmp
+dist/
