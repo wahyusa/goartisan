@@ -4,11 +4,14 @@
 
 [Roadmap to v1.0.0](https://github.com/users/wahyusa/projects/12/views/1)
 
-Go Artisan is a CLI tool designed to simplify and accelerate the development of RESTful APIs in Go with artisan like command.
+Go Artisan is a CLI tool designed to simplify and accelerate the development of RESTful APIs in Go with artisan-like command.
 
 Built with [Cobra](https://github.com/spf13/cobra) and [Viper](https://github.com/spf13/viper)
 
 The code generated will using Gin, GORM, MySQL and godotenv with repository pattern, but you can modify it based on each template.
+
+![image](https://github.com/user-attachments/assets/c8780fcb-6371-4016-96e9-af88113ad426)
+
 
 ## FAQ
 
@@ -87,6 +90,11 @@ goartisan make:all book
 ```bash
 goartisan --help
 ```
+
+### Typical structure after running all commands
+
+![image](https://github.com/user-attachments/assets/633cbd7b-e846-484e-a639-639ee81f3023)
+
 
 ## Default Configuration
 
