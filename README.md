@@ -153,14 +153,32 @@ Consider other alternative if you want too,
 
 [Go Scaffold](https://github.com/go-scaffold/go-scaffold)
 
-## Credits
+## Special thanks to
 
 [Cobra](https://github.com/spf13/cobra)
 
+A Commander for modern Go CLI interactions 
+
 [Viper](https://github.com/spf13/viper)
+
+Go configuration with fangs 
 
 [Gin](https://github.com/gin-gonic/gin)
 
+Gin is a HTTP web framework written in Go (Golang). It features a Martini-like API with much better performance -- up to 40 times faster. If you need smashing performance, get yourself some Gin. 
+
 [GORM](https://github.com/go-gorm/gorm)
 
+The fantastic ORM library for Golang, aims to be developer friendly 
+
 [godotenv](https://github.com/joho/godotenv)
+
+A Go port of Ruby's dotenv library (Loads environment variables from .env files) 
+
+[spinner](https://github.com/briandowns/spinner)
+
+Go (golang) package with 90 configurable terminal spinner/progress indicators. 
+
+[color](https://github.com/fatih/color)
+
+Color package for Go (golang) 
